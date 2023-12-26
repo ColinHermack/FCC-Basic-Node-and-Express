@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 let express = require("express");
 let app = express();
 
@@ -13,6 +14,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.get("/", (req, res) => res.sendFile(__dirname + "/views/index.html"));
 
 app.get(
@@ -25,6 +28,14 @@ app.get(
     res.send({ time: req.time });
   },
 );
+
+app.get("/:word/echo", (req, res) => {
+  res.send({ echo: req.params.word });
+});
+
+app.route("/name").get(function (req, res) {
+  res.json({ name: req.query.first + " " + req.query.last });
+});
 
 app.get("/json", (req, res) => {
   if (process.env["MESSAGE_STYLE"] === "uppercase") {
